@@ -1,15 +1,19 @@
 //
 // Created by Kevin Funderburg on 2019-10-24.
 //
-enum Suit {SPADES = 0, CLUBS = 1, HEARTS = 2, DIAMONDS = 3};
+#include <stdbool.h>
+#include <stdlib.h>
 
+enum Suit {SPADES = 0, CLUBS = 1, HEARTS = 2, DIAMONDS = 3};
 struct Card
 {
     int num;
-    Suit suit;
+    enum Suit suit;
 };
 
-bool isPair(Card hand[3])
+bool isPair(struct Card []);
+
+bool isPair(struct Card hand[3])
 {
     for (int i = 0; i < 3; ++i) {
         for (int j = 0; j < 2; ++j) {
@@ -22,5 +26,6 @@ bool isPair(Card hand[3])
 
 int main(int argc, char *argv[])
 {
-
+    struct hand1 = Card[3];
+    return 0;
 }
