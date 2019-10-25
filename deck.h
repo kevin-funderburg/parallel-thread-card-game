@@ -11,14 +11,17 @@
 
 class Deck
 {
-    Card cards[];
-    Deck();
+    int size;
+    Card * cards = new Card[52];
+
+    Deck(int);
     void shuffle();
+    Card popCard();
     void showContents();
 };
 
 
-Deck::Deck()
+Deck::Deck(int s) : size(s)
 {
     int cnt = 0;
     for (int i = 0; i < 3; ++i) {
@@ -41,6 +44,17 @@ void Deck::shuffle()
     }
 }
 
+Card Deck::popCard()
+{
+    Card c = cards[0];
+    Card * tmp = new Card[size-1];
+    for (int i = 0; i < size-1; ++i)
+        tmp[i] = cards[i+1];
+    delete[] cards;
+    cards = tmp;
+    size--;
+    return c;
+}
 /**
  * log the contents of the deck
  */
