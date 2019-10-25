@@ -5,6 +5,8 @@
 #ifndef DECK_H
 #define DECK_H
 
+#include <iostream>
+#include <queue>
 #include "card.h"
 
 class Deck
@@ -12,6 +14,7 @@ class Deck
     Card cards[];
     Deck();
     void shuffle();
+    void showContents();
 };
 
 
@@ -22,11 +25,14 @@ Deck::Deck()
         for (int j = 0; j < 13; ++j) {
             cards[cnt].num = j;
             cards[cnt].suit = i;
-            cnt += 1;
+            cnt++;
         }
     }
 }
 
+/**
+ * shuffle the deck
+ */
 void Deck::shuffle()
 {
     Card tmp[52];
@@ -35,4 +41,11 @@ void Deck::shuffle()
     }
 }
 
+/**
+ * log the contents of the deck
+ */
+void Deck::showContents()
+{
+
+}
 #endif //DECK_H
