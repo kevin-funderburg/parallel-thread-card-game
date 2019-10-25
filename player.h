@@ -6,43 +6,106 @@
 #define PLAYER_H
 
 #include <iostream>
+#include <fstream>
 #include "card.h"
 using namespace std;
 
 class Player
 {
     int num;
-    int FULL_HAND = 3;
-    Card *hand;
+    int FULL_HAND = 2;
     int handSize;
+    Card* hand;
     bool turn;
+    bool winner;
 
+public:
     Player(int);
-    void draw(Card card);
+    void draw(Card);
+    void push(Card);
+    Card discard();
     bool isPair();
+    bool isWinner();
     bool isTurn();
+    string getHand();
+    void exit();
     void log(string);
     void out(string);
 };
 
-Player::Player(int n):num(n), hand(new Card[FULL_HAND]), handSize(0) {}
+Player::Player(int n):num(n), handSize(0), winner(false)
+{
+    hand = new Card[2];
+}
 
 void Player::draw(Card card)
 {
     hand[handSize] = card;
     handSize++;
+
+    log("draws " + to_string(card.num));
+    log(getHand());
+//    if (!isWinner()) discard();
+}
+
+void Player::push(Card card)
+{
+    hand[handSize] = card;
+    handSize++;
+    log(getHand());
+    if (isPair()) log("wins");
+}
+
+string Player::getHand()
+{
+    string str;
+    for (int i = 0; i < handSize; ++i) {
+        if (i == 0) str = to_string(hand[i].num);
+        else str += " " + to_string(hand[i].num);
+    }
+    return "hand " + str;
+}
+
+Card Player::discard()
+{
+    Card *tmpHand = new Card[2];
+    int i = rand() % FULL_HAND;
+    Card remove = hand[i];
+    Card keep;
+    if (i == 0) keep = hand[1];
+    else keep = hand[0];
+
+    tmpHand[0] = keep;
+    delete[] hand;
+    hand = tmpHand;
+    handSize = 1;
+
+    string str = "discarded " + to_string(remove.num);
+    log(str);
+    return remove;
+}
+
+bool Player::isWinner()
+{
+    if (isPair()) {
+        winner = true;
+        log("wins");
+        return true;
+    } else {
+        winner = false;
+        return false;
+    }
 }
 
 /**
  * check if hand contains a pair
  * @return bool
  */
-bool Player::isPair() {
-    for (int i = 0; i < handSize; ++i) {
-        for (int j = 0; j < handSize; ++j)
-            if (j != i && hand[i].num == hand[j].num) return true;
-    }
-    return false;
+bool Player::isPair() { return hand[0].num == hand[1].num; }
+
+void Player::exit()
+{
+    log("exits round");
 }
 
 /**
@@ -50,7 +113,12 @@ bool Player::isPair() {
  */
 void Player::log(string str)
 {
-    cout << "PLAYER " << num << ": " << str << endl;
+    ofstream logger("log.data",  ios::out | ios::app);    //output to text file for viewing
+
+    if (logger.is_open())
+    {
+        logger << "PLAYER " << num << ": " << str << endl;
+    }
 }
 
 /**
@@ -58,7 +126,11 @@ void Player::log(string str)
  */
 void Player::out(string str)
 {
-    cout << "PLAYER " << num << ": " << str << endl;
+    string win = winner ? "yes" : "no";
+
+    cout << "PLAYER " << num << ":\n"
+         << getHand() << endl
+         << "WIN " << win << endl;
 }
 
 #endif //PLAYER_H

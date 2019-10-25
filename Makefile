@@ -1,8 +1,8 @@
-sim: pairwar.o
-	g++ -std=c++11 pairwar.o -o pairwar
-sim.o: pairwar.c
-	g++ -Wall -ansi -pedantic -std=c++11 -c pairwar.c
+sim: main.o
+	g++ -std=c++11 main.o -o main
+sim.o: main.cpp
+	g++ -Wall -ansi -pedantic -std=c++11 -c main.cpp
 clean:
-	@rm -rf pairwar.o
+	@rm -rf main.o
 cleanall:
-	@rm -rf pairwar.o pairwar
+	@rm -rf main.o main

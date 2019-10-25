@@ -6,29 +6,33 @@
 #define DECK_H
 
 #include <iostream>
+#include <fstream>
+#include <iomanip>
 #include <random>
 #include "card.h"
 using namespace std;
 
 class Deck
 {
-    int FULL_DECK = 52;
+    static const int FULL_DECK = 52;
     int size;
-    Card *cards;
+    Card *cards = new Card[FULL_DECK];
 
+public:
     Deck();
     void shuffle();
     void popCard();
+    void push(Card);
     Card topCard();
-    void showContents();
+    void show();
 };
 
 
-Deck::Deck() : size(FULL_DECK), cards(new Card[FULL_DECK])
+Deck::Deck() : size(FULL_DECK)
 {
     int cnt = 0;
     Suit s;
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < 4; ++i) {
         switch (i) {
             case 0: s = SPADES; break;
             case 1: s = CLUBS; break;
@@ -39,6 +43,7 @@ Deck::Deck() : size(FULL_DECK), cards(new Card[FULL_DECK])
         for (int j = 1; j < 14; ++j) {
             cards[cnt].num = j;
             cards[cnt].suit = s;
+//            cout << "cards[cnt].num: " << cards[cnt].num << endl;
             cnt++;
         }
     }
@@ -54,7 +59,10 @@ void Deck::shuffle()
     int j = 0;
     while (!shuffled)
     {
-        Card c = cards[(int) rand()/FULL_DECK];
+        int r = 0;
+        while (r < 1 || r > FULL_DECK)
+            r = rand() % FULL_DECK + 1;
+        Card c = cards[r];
         bool contains = false;
         for (int i = 0; i < FULL_DECK; ++i) {
             if (tmp[i].num == c.num && tmp[i].suit == c.suit) {
@@ -65,10 +73,12 @@ void Deck::shuffle()
         if (!contains) {
             tmp[j] = c;
             j++;
-            if (j == FULL_DECK) shuffled = true;
+            if (j == FULL_DECK-1) shuffled = true;
         }
-    }
 
+    }
+    delete[] cards;
+    cards = tmp;
 }
 
 /**
@@ -76,12 +86,19 @@ void Deck::shuffle()
  */
 void Deck::popCard()
 {
-    Card *tmp = new Card[size-1];
-    for (int i = 0; i < size-1; ++i)
+    Card *tmp = new Card[FULL_DECK];
+    for (int i = 0; i < size; ++i)
         tmp[i] = cards[i+1];
     delete[] cards;
     cards = tmp;
     size--;
+}
+
+void Deck::push(Card c)
+{
+    cards[size+1] = c;
+    size++;
+    show();
 }
 
 /**
@@ -93,11 +110,16 @@ Card Deck::topCard() { return cards[0]; }
 /**
  * log the contents of the deck
  */
-void Deck::showContents()
+void Deck::show()
 {
-    for (int i = 0; i < size; ++i) {
-        if (i == 0) { cout << cards[i].num << endl; }
-        else { cout << " " << cards[i].num << endl; }
+    ofstream logger("log.data",  ios::out | ios::app);    //output to text file for viewing
+
+    if (logger.is_open()) {
+        for (int i = 0; i < size; ++i) {
+            if (i == 0) { logger << "DECK: " << setw(3) << cards[i].num; }
+            else { logger << setw(3) << cards[i].num; }
+        }
+        logger << endl;
     }
 }
 #endif //DECK_H
