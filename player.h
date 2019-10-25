@@ -6,27 +6,31 @@
 #define PLAYER_H
 
 #include <iostream>
+#include "card.h"
 using namespace std;
 
 class Player
 {
     int num;
-    Card hand[3];
+    int FULL_HAND = 3;
+    Card *hand;
+    int handSize;
     bool turn;
 
     Player(int);
     void draw(Card card);
     bool isPair();
-    bool isTurn;
+    bool isTurn();
     void log(string);
     void out(string);
 };
 
-Player::Player(int n):num(n) {}
+Player::Player(int n):num(n), hand(new Card[FULL_HAND]), handSize(0) {}
 
 void Player::draw(Card card)
 {
-
+    hand[handSize] = card;
+    handSize++;
 }
 
 /**
@@ -34,11 +38,9 @@ void Player::draw(Card card)
  * @return bool
  */
 bool Player::isPair() {
-    for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 2; ++j) {
-            if (j != i)
-                if (hand[i].num == hand[j].num) return true;
-        }
+    for (int i = 0; i < handSize; ++i) {
+        for (int j = 0; j < handSize; ++j)
+            if (j != i && hand[i].num == hand[j].num) return true;
     }
     return false;
 }

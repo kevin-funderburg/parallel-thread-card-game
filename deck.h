@@ -6,28 +6,39 @@
 #define DECK_H
 
 #include <iostream>
-#include <queue>
+#include <random>
 #include "card.h"
+using namespace std;
 
 class Deck
 {
+    int FULL_DECK = 52;
     int size;
-    Card * cards = new Card[52];
+    Card *cards;
 
-    Deck(int);
+    Deck();
     void shuffle();
-    Card popCard();
+    void popCard();
+    Card topCard();
     void showContents();
 };
 
 
-Deck::Deck(int s) : size(s)
+Deck::Deck() : size(FULL_DECK), cards(new Card[FULL_DECK])
 {
     int cnt = 0;
+    Suit s;
     for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 13; ++j) {
+        switch (i) {
+            case 0: s = SPADES; break;
+            case 1: s = CLUBS; break;
+            case 2: s = HEARTS; break;
+            case 3: s = DIAMONDS; break;
+            default: cerr << "invalid suit";
+        }
+        for (int j = 1; j < 14; ++j) {
             cards[cnt].num = j;
-            cards[cnt].suit = i;
+            cards[cnt].suit = s;
             cnt++;
         }
     }
@@ -38,28 +49,55 @@ Deck::Deck(int s) : size(s)
  */
 void Deck::shuffle()
 {
-    Card tmp[52];
-    for (int i = 0; i < 52; ++i) {
-//        temp[i] = deck[rand()/RAND_MAX];
+    Card *tmp = new Card[FULL_DECK];
+    bool shuffled = false;
+    int j = 0;
+    while (!shuffled)
+    {
+        Card c = cards[(int) rand()/FULL_DECK];
+        bool contains = false;
+        for (int i = 0; i < FULL_DECK; ++i) {
+            if (tmp[i].num == c.num && tmp[i].suit == c.suit) {
+                contains = true;
+                break;
+            }
+        }
+        if (!contains) {
+            tmp[j] = c;
+            j++;
+            if (j == FULL_DECK) shuffled = true;
+        }
     }
+
 }
 
-Card Deck::popCard()
+/**
+ * remove card at top of deck
+ */
+void Deck::popCard()
 {
-    Card c = cards[0];
-    Card * tmp = new Card[size-1];
+    Card *tmp = new Card[size-1];
     for (int i = 0; i < size-1; ++i)
         tmp[i] = cards[i+1];
     delete[] cards;
     cards = tmp;
     size--;
-    return c;
 }
+
+/**
+ * get card at top of deck
+ * @return card
+ */
+Card Deck::topCard() { return cards[0]; }
+
 /**
  * log the contents of the deck
  */
 void Deck::showContents()
 {
-
+    for (int i = 0; i < size; ++i) {
+        if (i == 0) { cout << cards[i].num << endl; }
+        else { cout << " " << cards[i].num << endl; }
+    }
 }
 #endif //DECK_H
