@@ -53,7 +53,7 @@ void Player::push(Card card)
     hand[handSize] = card;
     handSize++;
     log(getHand());
-    if (isPair()) log("wins");
+//    if (isPair()) log("wins");
 }
 
 string Player::getHand()
@@ -80,8 +80,7 @@ Card Player::discard()
     hand = tmpHand;
     handSize = 1;
 
-    string str = "discarded " + to_string(remove.num);
-    log(str);
+    log("discarded " + to_string(remove.num));
     return remove;
 }
 
