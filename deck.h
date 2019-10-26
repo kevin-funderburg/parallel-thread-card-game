@@ -43,7 +43,6 @@ Deck::Deck() : size(FULL_DECK)
         for (int j = 1; j < 14; ++j) {
             cards[cnt].num = j;
             cards[cnt].suit = s;
-//            cout << "cards[cnt].num: " << cards[cnt].num << endl;
             cnt++;
         }
     }
@@ -112,7 +111,16 @@ Card Deck::topCard() { return cards[0]; }
  */
 void Deck::show()
 {
-    ofstream logger("log.data",  ios::out | ios::app);    //output to text file for viewing
+    ofstream logger("log.data",  ios::out | ios::app);
+
+    ////////////////////////////////////////////
+    //TODO - this cout block will be removed at the end, just for debugging
+    for (int i = 0; i < size; ++i) {
+        if (i == 0) { cout << "DECK: " << setw(3) << cards[i].num; }
+        else { cout << setw(3) << cards[i].num; }
+    }
+    cout << endl;
+    //////////////////////////////////////////
 
     if (logger.is_open()) {
         for (int i = 0; i < size; ++i) {

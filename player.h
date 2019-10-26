@@ -113,6 +113,7 @@ void Player::exit()
 void Player::log(string str)
 {
     ofstream logger("log.data",  ios::out | ios::app);    //output to text file for viewing
+    cout << "PLAYER " << num << ": " << str << endl;
 
     if (logger.is_open())
     {
