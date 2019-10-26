@@ -7,24 +7,19 @@ using namespace std;
 
 class Dealer
 {
-    Deck deck;
+    Card hand;
 
 public:
     Dealer();
     Card deal();
+    void draw(Card);
 };
 
-Dealer::Dealer()
-{
-    deck = Deck();
-}
+Dealer::Dealer() {}
 
-Card Dealer::deal()
-{
-    Card c = deck.topCard();
-    deck.popCard();
-    return c;
-}
+Card Dealer::deal() { return hand; }
+
+void Dealer::draw(Card card) { hand = card; }
 
 int main(int argc, char *argv[])
 {
@@ -32,19 +27,22 @@ int main(int argc, char *argv[])
     bool winner = false;
     ofstream log("log.data",  ios::out | ios::app);    //output to text file for viewing
 
-    Dealer dealer;
-
     Deck deck = Deck();
-    deck.show();
-    deck.shuffle();
-    deck.show();
-
+    Dealer dealer;
     Player player1(1);
     Player player2(2);
     Player player3(3);
 
-    player1.push(deck.topCard());
+    deck.show();
+    deck.shuffle();
+    deck.show();
+
+    dealer.draw(deck.topCard());
     deck.popCard();
+
+    player1.push(dealer.deal());
+    deck.popCard();
+
     while (!winner)
     {
         player1.draw(deck.topCard());
