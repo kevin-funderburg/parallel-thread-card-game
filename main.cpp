@@ -7,7 +7,7 @@ using namespace std;
 
 class Dealer
 {
-    Card hand;
+    Card hand;// should this be an array?
 
 public:
     Dealer();
