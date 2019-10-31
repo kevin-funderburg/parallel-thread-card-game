@@ -10,7 +10,6 @@
 #include "dealer.h"
 using namespace std;
 
-#define NUM_THREADS 5
 #define NUM_ROUNDS 3
 // global variables
 Deck deck;
