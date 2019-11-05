@@ -12,6 +12,7 @@ using namespace std;
 
 class Player
 {
+private:
     int num;
     int FULL_HAND = 2;
     int handSize;
@@ -102,10 +103,7 @@ bool Player::isWinner()
  */
 bool Player::isPair() { return hand[0].num == hand[1].num; }
 
-void Player::exit()
-{
-    log("exits round");
-}
+void Player::exit() { log("exits round"); }
 
 /**
  * output to log file
@@ -113,12 +111,10 @@ void Player::exit()
 void Player::log(string str)
 {
     ofstream logger("log.data",  ios::out | ios::app);    //output to text file for viewing
+    //TODO - remove cout statement, only for debugging
     cout << "PLAYER " << num << ": " << str << endl;
 
-    if (logger.is_open())
-    {
-        logger << "PLAYER " << num << ": " << str << endl;
-    }
+    if (logger.is_open()) logger << "PLAYER " << num << ": " << str << endl;
 }
 
 /**

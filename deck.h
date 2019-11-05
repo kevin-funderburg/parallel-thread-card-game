@@ -86,7 +86,7 @@ void Deck::shuffle()
  */
 void Deck::popCard()
 {
-    Card *tmp = new Card[FULL_DECK];
+    Card *tmp = new Card[FULL_DECK-1];
     for (int i = 0; i < size; ++i)
         tmp[i] = cards[i+1];
     delete[] cards;
@@ -94,11 +94,14 @@ void Deck::popCard()
     size--;
 }
 
+/**
+ * add card to bottom of deck
+ * @param c - card to be added
+ */
 void Deck::push(Card c)
 {
-    cards[size+1] = c;
+    cards[size] = c;
     size++;
-//    if (size < FULL_DECK) size++;
     show();
 }
 
@@ -119,15 +122,15 @@ void Deck::show()
     //TODO - this cout block will be removed at the end, just for debugging
     int i;
     for (i = 0; i < size; ++i) {
-        if (i == 0) { cout << "DECK: " << setw(3) << cards[i].num; }
+        if (i == 0) { cout << "DECK [" << size+1 << "]: " << setw(3) << cards[i].num; }
         else { cout << setw(3) << cards[i].num; }
     }
-    cout << "\nSIZE OF DECK: " << i << endl;
+    cout << endl;
     //////////////////////////////////////////
 
     if (logger.is_open()) {
         for (int i = 0; i < size; ++i) {
-            if (i == 0) { logger << "DECK: " << setw(3) << cards[i].num; }
+            if (i == 0) { logger << "DECK [" << size+1 << "]: "  << setw(3) << cards[i].num; }
             else { logger << setw(3) << cards[i].num; }
         }
         logger << endl;

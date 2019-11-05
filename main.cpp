@@ -60,6 +60,34 @@ void *mutex_testing(void *param)
 
 int main(int argc, char *argv[])
 {
+    init();
+    deck.show();
+    deck.shuffle();
+    deck.show();
+    auto player = Player(1);
+    Dealer dealer;
+    dealer.draw(deck.topCard());
+    deck.popCard();
+    player.push(dealer.deal());
+    while (!winner)
+    {
+//        pthread_mutex_lock(&myMutex);
+
+        player.draw(deck.topCard());
+        deck.popCard();
+
+        if (player.isWinner()) {
+            winner = true;
+            player.exit();
+        } else {
+            deck.push(player.discard());
+        }
+
+//        pthread_mutex_unlock(&myMutex);
+
+    }
+
+    return 0;
     for (int j = 0; j < NUM_ROUNDS; ++j)
     {
         cout << "----------------------------------------------\n"
