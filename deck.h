@@ -28,7 +28,7 @@ public:
 };
 
 
-Deck::Deck() : size(FULL_DECK)
+Deck::Deck() : size(FULL_DECK-1)
 {
     int cnt = 0;
     Suit s;
@@ -54,6 +54,7 @@ Deck::Deck() : size(FULL_DECK)
 void Deck::shuffle()
 {
     Card *tmp = new Card[FULL_DECK];
+    int tmpSize = 0;
     bool shuffled = false;
     int j = 0;
     while (!shuffled)
@@ -63,7 +64,7 @@ void Deck::shuffle()
             r = rand() % FULL_DECK + 1;
         Card c = cards[r];
         bool contains = false;
-        for (int i = 0; i < FULL_DECK; ++i) {
+        for (int i = 0; i < tmpSize; ++i) {
             if (tmp[i].num == c.num && tmp[i].suit == c.suit) {
                 contains = true;
                 break;
@@ -72,9 +73,9 @@ void Deck::shuffle()
         if (!contains) {
             tmp[j] = c;
             j++;
+            tmpSize++;
             if (j == FULL_DECK-1) shuffled = true;
         }
-
     }
     delete[] cards;
     cards = tmp;
@@ -97,6 +98,7 @@ void Deck::push(Card c)
 {
     cards[size+1] = c;
     size++;
+//    if (size < FULL_DECK) size++;
     show();
 }
 
@@ -115,11 +117,12 @@ void Deck::show()
 
     ////////////////////////////////////////////
     //TODO - this cout block will be removed at the end, just for debugging
-    for (int i = 0; i < size; ++i) {
+    int i;
+    for (i = 0; i < size; ++i) {
         if (i == 0) { cout << "DECK: " << setw(3) << cards[i].num; }
         else { cout << setw(3) << cards[i].num; }
     }
-    cout << endl;
+    cout << "\nSIZE OF DECK: " << i << endl;
     //////////////////////////////////////////
 
     if (logger.is_open()) {
