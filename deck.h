@@ -30,6 +30,7 @@ public:
 
 Deck::Deck() : size(FULL_DECK-1)
 {
+    srand (time(NULL));
     int cnt = 0;
     Suit s;
     for (int i = 0; i < 4; ++i) {
@@ -53,6 +54,7 @@ Deck::Deck() : size(FULL_DECK-1)
  */
 void Deck::shuffle()
 {
+
     Card *tmp = new Card[FULL_DECK];
     int tmpSize = 0;
     bool shuffled = false;

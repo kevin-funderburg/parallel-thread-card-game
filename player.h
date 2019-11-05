@@ -89,7 +89,7 @@ bool Player::isWinner()
 {
     if (isPair()) {
         winner = true;
-        log("wins");
+        log("WINS");
         return true;
     } else {
         winner = false;
@@ -103,7 +103,7 @@ bool Player::isWinner()
  */
 bool Player::isPair() { return hand[0].num == hand[1].num; }
 
-void Player::exit() { log("exits round"); }
+void Player::exit() { log("exits round\n"); }
 
 /**
  * output to log file
