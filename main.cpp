@@ -15,10 +15,11 @@ void *drawCards(void *param);
 #define NUM_ROUNDS 3
 
 // global variables
-Deck deck;
+Deck deck;  //shared data for all threads
 bool winner;
 ofstream logfile;
-pthread_mutex_t _mutex;
+pthread_mutex_t player_mutex;
+pthread_cond_t winnerExists;
 
 /**
  * This structure is passed as a parameter when creating a player thread
@@ -45,23 +46,49 @@ void *drawCards(void *param)
     //TODO - when any player wins, all players need to stop immediately, right now they are doing one more loop
     while (!winner)
     {
-        pthread_mutex_lock(&_mutex);
+        pthread_mutex_lock(&player_mutex);
 
         player.draw(deck.topCard());
         deck.popCard();
 
+
         if (player.isWinner()) {
             winner = true;
+            //TODO - when a player exists, all players should output that they exit
             player.exit();
+            /*
+            Check if winner exists and signal waiting thread when condition is
+            reached.  Note that this occurs while mutex is locked.
+            */
+            pthread_cond_signal(&winnerExists);
         } else {
             deck.push(player.discard());
         }
 
-        pthread_mutex_unlock(&_mutex);
+        pthread_mutex_unlock(&player_mutex);
 
         /* Do some "work" so threads can alternate on _mutex lock */
         sleep(1);
     }
+//    player.exit();
+    pthread_mutex_unlock(&player_mutex);
+
+}
+
+void *_dealer(void *param)
+{
+    auto *arg = (thread_data *)param;   //cast param to thread_data structure
+    auto myID = arg->thread_id;
+    /**
+     * Lock mutex and wait for signal.
+     */
+    pthread_mutex_lock(&player_mutex);
+    while(!winner)
+    {
+        pthread_cond_wait(&winnerExists, &player_mutex);
+        cout << "_dealer(): thread " << myID << " Condition signal received.\n";
+    }
+    pthread_mutex_unlock(&player_mutex);
 
 }
 
@@ -78,7 +105,10 @@ int main(int argc, char *argv[])
         deck.show();
         Dealer dealer;  //TODO - Dealer should be made in a thread
 
-    pthread_t player1, player2, player3;
+        pthread_t dlr, player1, player2, player3;
+
+        thread_data d;
+        d.thread_id = 5;
 
         // create the thread_data with the thread ID and the first card
         thread_data td[3];
@@ -91,9 +121,11 @@ int main(int argc, char *argv[])
         deck.show();
 
         /* Initialize mutex and condition variable objects */
-        pthread_mutex_init(&_mutex, nullptr);
+        pthread_mutex_init(&player_mutex, nullptr);
+        pthread_cond_init (&winnerExists, nullptr);
 
         /* Create threads */
+        pthread_create(&dlr, nullptr, _dealer, (void *) &d);
         pthread_create(&player1, nullptr, drawCards, (void *) &td[0]);
         pthread_create(&player2, nullptr, drawCards, (void *) &td[1]);
         pthread_create(&player3, nullptr, drawCards, (void *) &td[2]);
@@ -107,6 +139,6 @@ int main(int argc, char *argv[])
     logfile.close();
 
     /* Clean up and exit */
-    pthread_mutex_destroy(&_mutex);
+    pthread_mutex_destroy(&player_mutex);
     pthread_exit(nullptr);
 }

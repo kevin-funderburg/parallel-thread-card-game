@@ -103,7 +103,7 @@ bool Player::isWinner()
  */
 bool Player::isPair() { return hand[0].num == hand[1].num; }
 
-void Player::exit() { log("exits round\n"); }
+void Player::exit() { log("exits round"); }
 
 /**
  * output to log file
