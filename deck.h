@@ -55,7 +55,7 @@ Deck::Deck() : size(FULL_DECK-1)
 void Deck::shuffle()
 {
 
-    Card *tmp = new Card[FULL_DECK];
+    Card *tmp = new Card[FULL_DECK-1];
     int tmpSize = 0;
     bool shuffled = false;
     int j = 0;
