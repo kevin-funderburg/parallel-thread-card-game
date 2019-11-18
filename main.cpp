@@ -1,3 +1,7 @@
+//
+// Created by Kevin Funderburg on 2019-10-24.
+//
+
 #include <iostream>
 #include <fstream>
 #include <pthread.h>
@@ -20,6 +24,7 @@ bool winner;
 ofstream logfile;
 pthread_mutex_t player_mutex;
 pthread_cond_t winnerExists;
+pthread_t dlr, player1, player2, player3;
 
 /**
  * This structure is passed as a parameter when creating a player thread
@@ -43,7 +48,6 @@ void *drawCards(void *param)
     Player player(arg->thread_id);      //create player object with thread id
     player.push(arg->card);             //add card to players hand
 
-    //TODO - when any player wins, all players need to stop immediately, right now they are doing one more loop
     while (!winner)
     {
         pthread_mutex_lock(&player_mutex);
@@ -51,10 +55,8 @@ void *drawCards(void *param)
         player.draw(deck.topCard());
         deck.popCard();
 
-
         if (player.isWinner()) {
             winner = true;
-            //TODO - when a player exists, all players should output that they exit
             player.exit();
             /*
             Check if winner exists and signal waiting thread when condition is
@@ -70,7 +72,7 @@ void *drawCards(void *param)
         /* Do some "work" so threads can alternate on _mutex lock */
         sleep(1);
     }
-//    player.exit();
+    player.exit();
     pthread_mutex_unlock(&player_mutex);
 
 }
@@ -86,7 +88,7 @@ void *_dealer(void *param)
     while(!winner)
     {
         pthread_cond_wait(&winnerExists, &player_mutex);
-        cout << "_dealer(): thread " << myID << " Condition signal received.\n";
+        cout << "Winner exists.\n";
     }
     pthread_mutex_unlock(&player_mutex);
 
@@ -96,16 +98,15 @@ int main(int argc, char *argv[])
 {
     for (int j = 0; j < NUM_ROUNDS; ++j)
     {
-        cout << "\n----------------------------------------------\n"
-             << "\t\t\t\t\tROUND: " << j + 1 << endl
-             << "----------------------------------------------\n";
+        string _round = "\n----------------------------------------------\n"
+                     "\t\tROUND: " + to_string(j + 1) + "\n"
+                     "----------------------------------------------\n";
+        cout << _round;
 
         init();
         deck.shuffle();
         deck.show();
-        Dealer dealer;  //TODO - Dealer should be made in a thread
-
-        pthread_t dlr, player1, player2, player3;
+        Dealer dealer;
 
         thread_data d;
         d.thread_id = 5;

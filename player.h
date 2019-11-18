@@ -31,7 +31,7 @@ public:
     string getHand();
     void exit();
     void log(string);
-    void out(string);
+    void out();
 };
 
 Player::Player(int n):num(n), handSize(0), winner(false)
@@ -46,7 +46,6 @@ void Player::draw(Card card)
 
     log("draws " + to_string(card.num));
     log(getHand());
-//    if (!isWinner()) discard();
 }
 
 void Player::push(Card card)
@@ -54,7 +53,6 @@ void Player::push(Card card)
     hand[handSize] = card;
     handSize++;
     log(getHand());
-//    if (isPair()) log("wins");
 }
 
 string Player::getHand()
@@ -64,7 +62,7 @@ string Player::getHand()
         if (i == 0) str = to_string(hand[i].num);
         else str += " " + to_string(hand[i].num);
     }
-    return "hand " + str;
+    return "HAND " + str;
 }
 
 Card Player::discard()
@@ -80,7 +78,6 @@ Card Player::discard()
     delete[] hand;
     hand = tmpHand;
     handSize = 1;
-
     log("discarded " + to_string(remove.num));
     return remove;
 }
@@ -90,9 +87,11 @@ bool Player::isWinner()
     if (isPair()) {
         winner = true;
         log("WINS");
+        out();
         return true;
     } else {
         winner = false;
+        out();
         return false;
     }
 }
@@ -111,19 +110,15 @@ void Player::exit() { log("exits round"); }
 void Player::log(string str)
 {
     ofstream logger("log.data",  ios::out | ios::app);    //output to text file for viewing
-    //TODO - remove cout statement, only for debugging
-    cout << "PLAYER " << num << ": " << str << endl;
-
     if (logger.is_open()) logger << "PLAYER " << num << ": " << str << endl;
 }
 
 /**
  * output to console
  */
-void Player::out(string str)
+void Player::out()
 {
     string win = winner ? "yes" : "no";
-
     cout << "PLAYER " << num << ":\n"
          << getHand() << endl
          << "WIN " << win << endl;

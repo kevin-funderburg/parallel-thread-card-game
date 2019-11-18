@@ -54,7 +54,6 @@ Deck::Deck() : size(FULL_DECK-1)
  */
 void Deck::shuffle()
 {
-
     Card *tmp = new Card[FULL_DECK-1];
     int tmpSize = 0;
     bool shuffled = false;
@@ -120,15 +119,12 @@ void Deck::show()
 {
     ofstream logger("log.data",  ios::out | ios::app);
 
-    ////////////////////////////////////////////
-    //TODO - this cout block will be removed at the end, just for debugging
     int i;
     for (i = 0; i < size; ++i) {
         if (i == 0) { cout << "DECK [" << size+1 << "]: " << setw(3) << cards[i].num; }
         else { cout << setw(3) << cards[i].num; }
     }
     cout << endl;
-    //////////////////////////////////////////
 
     if (logger.is_open()) {
         for (int i = 0; i < size; ++i) {
