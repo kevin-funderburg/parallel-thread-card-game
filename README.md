@@ -14,7 +14,7 @@ Authors: Kevin Funderburg, Rob Murray
 </details>
 
 ## About
-In this project, we will practice with POSIX threads by builging a “Pair War” card game.
+In this project, we will expand our knowledge of threading through the production of a "Pair War" card game.
 
 Pair War is a simple card game with one dealer, 3 players, and a single deck of cards. The game is composed of three rounds.
 
@@ -27,7 +27,7 @@ Once a round ends, the dealer shuffles the deck again and hands a card to each p
 The trick of the project is the deck of cards will represent a shared resource that the threads are all attempting access simultaneously. By utilizing different synchronization methods, the game can be accomplised as desired even during these race confitions.
 
 ## Usage
-The program was built on macOS and Linux using C++.
+The program was built on macOS and Linux using POSIX threading with C++.
 
 - Make commands
 ```shell
